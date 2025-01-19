@@ -13,7 +13,13 @@ async function copyDirectory(src, dest) {
     for (const file of files) {
       const srcFilePath = path.join(src, file);
       const destFilePath = path.join(dest, file);
-      await fs.copyFile(srcFilePath, destFilePath);
+      const stats = await fs.stat(srcFilePath);
+      if (stats.isDirectory()) {
+        await copyDirectory(srcFilePath, destFilePath);
+      } else {
+        await fs.copyFile(srcFilePath, destFilePath);
+        console.log(`Файл скопирован: ${srcFilePath} -> ${destFilePath}`);
+      }
     }
 
     console.log('Копирование завершено.');
