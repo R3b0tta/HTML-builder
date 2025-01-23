@@ -11,19 +11,22 @@ fs.readdir(path.join(__dirname, 'secret-folder'), (err, files) => {
 
   const fileStatsPromises = files.map((file) => {
     const filePath = path.join(__dirname, 'secret-folder', file);
-    fileExtensions.push(path.extname(filePath));
+
     return new Promise((resolve) => {
       fs.stat(filePath, (err, stats) => {
         if (err) {
           console.error('Ошибка при получении информации о файле:', err);
-        } else {
+          resolve();
+        } else if (stats.isFile()) {
+          fileExtensions.push(path.extname(filePath));
           fileStats.push(stats);
           fileSize.push(stats.size.toString() + 'bytes');
-          resolve();
         }
+        resolve();
       });
     });
   });
+
   Promise.all(fileStatsPromises)
     .then(() => {
       for (let i = 0; i < fileStats.length; ++i) {
