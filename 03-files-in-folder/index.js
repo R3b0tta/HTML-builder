@@ -17,7 +17,7 @@ fs.readdir(path.join(__dirname, 'secret-folder'), (err, files) => {
         if (err) {
           console.error('Ошибка при получении информации о файле:', err);
           resolve();
-        } else if (stats.isFile()) {
+        } else if (stats.isFile() && !stats.isDirectory()) {
           fileExtensions.push(path.extname(filePath));
           fileStats.push(stats);
           fileSize.push(stats.size.toString() + 'bytes');
